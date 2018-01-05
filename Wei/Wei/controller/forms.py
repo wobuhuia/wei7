@@ -20,7 +20,7 @@ class Forms(forms.Form):
 	#称呢
 	nickname = forms.CharField()
 	nickname.widget.attrs['class'] = 'form-control'
-	nickname.widget.attrs['placeholder'] = '确认密码'
+	nickname.widget.attrs['placeholder'] = '称呢'
 
 	#真实姓名
 	realname = forms.CharField()
