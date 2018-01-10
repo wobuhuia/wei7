@@ -1,5 +1,5 @@
 from django.conf.urls import include,url
-from .controller import index,login,register
+from .controller import index,login,register,user,weijk
 
 urlpatterns = [
 
@@ -14,4 +14,12 @@ urlpatterns = [
 
     #验证码
     url( r'^captcha$', include('captcha.urls')),
+
+    #用户模块
+    #url( r'^user/showOne$', user.showOne),
+
+    #微信
+    url( r'^weijkList$', weijk.list),
+    url( r'^weijkAdd$', weijk.add),
+    url( r'^weijkQun/(.*)$', weijk.qun),
 ]

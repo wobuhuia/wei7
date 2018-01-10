@@ -8,6 +8,127 @@
 from django.db import models
 
 
+class AuthGroup(models.Model):
+    name = models.CharField(unique=True, max_length=80)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_group'
+
+
+class AuthGroupPermissions(models.Model):
+    group_id = models.IntegerField()
+    permission_id = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'auth_group_permissions'
+        unique_together = (('group_id', 'permission_id'),)
+
+
+class AuthPermission(models.Model):
+    name = models.CharField(max_length=255)
+    content_type_id = models.IntegerField()
+    codename = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'auth_permission'
+        unique_together = (('content_type_id', 'codename'),)
+
+
+class AuthUser(models.Model):
+    password = models.CharField(max_length=128)
+    last_login = models.DateTimeField(blank=True, null=True)
+    is_superuser = models.IntegerField()
+    username = models.CharField(unique=True, max_length=150)
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=150)
+    email = models.CharField(max_length=254)
+    is_staff = models.IntegerField()
+    is_active = models.IntegerField()
+    date_joined = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user'
+
+
+class AuthUserGroups(models.Model):
+    user_id = models.IntegerField()
+    group_id = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user_groups'
+        unique_together = (('user_id', 'group_id'),)
+
+
+class AuthUserUserPermissions(models.Model):
+    user_id = models.IntegerField()
+    permission_id = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'auth_user_user_permissions'
+        unique_together = (('user_id', 'permission_id'),)
+
+
+class CaptchaCaptchastore(models.Model):
+    challenge = models.CharField(max_length=32)
+    response = models.CharField(max_length=32)
+    hashkey = models.CharField(unique=True, max_length=40)
+    expiration = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'captcha_captchastore'
+
+
+class DjangoAdminLog(models.Model):
+    action_time = models.DateTimeField()
+    object_id = models.TextField(blank=True, null=True)
+    object_repr = models.CharField(max_length=200)
+    action_flag = models.PositiveSmallIntegerField()
+    change_message = models.TextField()
+    content_type_id = models.IntegerField(blank=True, null=True)
+    user_id = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'django_admin_log'
+
+
+class DjangoContentType(models.Model):
+    app_label = models.CharField(max_length=100)
+    model = models.CharField(max_length=100)
+
+    class Meta:
+        managed = False
+        db_table = 'django_content_type'
+        unique_together = (('app_label', 'model'),)
+
+
+class DjangoMigrations(models.Model):
+    app = models.CharField(max_length=255)
+    name = models.CharField(max_length=255)
+    applied = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'django_migrations'
+
+
+class DjangoSession(models.Model):
+    session_key = models.CharField(primary_key=True, max_length=40)
+    session_data = models.TextField()
+    expire_date = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'django_session'
+
+
 class ImsAccount(models.Model):
     acid = models.AutoField(primary_key=True)
     uniacid = models.PositiveIntegerField()
@@ -20,6 +141,16 @@ class ImsAccount(models.Model):
     class Meta:
         managed = False
         db_table = 'ims_account'
+
+
+class ImsAccountWebapp(models.Model):
+    acid = models.IntegerField(primary_key=True)
+    uniacid = models.IntegerField(blank=True, null=True)
+    name = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'ims_account_webapp'
 
 
 class ImsAccountWechats(models.Model):
@@ -753,7 +884,8 @@ class ImsModules(models.Model):
     wxapp_support = models.IntegerField()
     app_support = models.IntegerField()
     welcome_support = models.IntegerField()
-    oauth_type = models.CharField(max_length=10)
+    oauth_type = models.IntegerField()
+    webapp_support = models.IntegerField()
 
     class Meta:
         managed = False
@@ -785,6 +917,16 @@ class ImsModulesPlugin(models.Model):
     class Meta:
         managed = False
         db_table = 'ims_modules_plugin'
+
+
+class ImsModulesRank(models.Model):
+    module_name = models.CharField(max_length=100)
+    uid = models.IntegerField()
+    rank = models.IntegerField()
+
+    class Meta:
+        managed = False
+        db_table = 'ims_modules_rank'
 
 
 class ImsModulesRecycle(models.Model):
@@ -1372,6 +1514,7 @@ class ImsUsersFounderGroup(models.Model):
     maxsubaccount = models.PositiveIntegerField()
     timelimit = models.PositiveIntegerField()
     maxwxapp = models.PositiveIntegerField()
+    maxwebapp = models.IntegerField()
 
     class Meta:
         managed = False
@@ -1386,6 +1529,7 @@ class ImsUsersGroup(models.Model):
     maxsubaccount = models.PositiveIntegerField()
     timelimit = models.PositiveIntegerField()
     maxwxapp = models.PositiveIntegerField()
+    maxwebapp = models.IntegerField()
 
     class Meta:
         managed = False
@@ -1531,6 +1675,14 @@ class ImsWechatNews(models.Model):
         db_table = 'ims_wechat_news'
 
 
+class ImsWeixinInfo(models.Model):
+    content = models.CharField(max_length=50, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'ims_weixin_info'
+
+
 class ImsWxappGeneralAnalysis(models.Model):
     uniacid = models.IntegerField()
     session_cnt = models.IntegerField()
@@ -1558,6 +1710,11 @@ class ImsWxappVersions(models.Model):
     template = models.IntegerField()
     quickmenu = models.CharField(max_length=2500)
     createtime = models.IntegerField()
+    type = models.IntegerField()
+    entry_id = models.IntegerField()
+    appjson = models.TextField()
+    default_appjson = models.TextField()
+    use_default = models.IntegerField()
 
     class Meta:
         managed = False
